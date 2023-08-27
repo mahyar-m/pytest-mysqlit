@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql_db:
+    platform: linux/amd64
+    image: mysql:5.7
+    container_name: 'mysql_db'
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT: 'root'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysqlit-data:/var/lib/mysql
+
+  mysqlit_pma:
+    container_name: mysqlit_pma
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql_db
+    ports:
+      - 5003:80
+    environment:
+      - 'PMA_HOST=mysql_db'
+      - 'PMA_PORT=3306'
+
+# persisted storage
+volumes:
+  mysqlit-data:
